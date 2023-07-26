@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Responsive Timeline Design | CodingNepal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div class="wrapper" id="timeline">
+    <div class="center-line">
+      <a href="#" class="scroll-icon"><i class="material-icons">expand_less</i></a>
+    </div>
+  </div>
+
+  <script>
+    const timeline = document.getElementById('timeline');
+
+fetch('https://operations-api.access-ci.org/wh2/cider/v1/access-allocated/')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data.results);
+    data.results.sort((a, b) => new Date(a.latest_status_begin) - new Date(b.latest_status_begin));
+    data.results.forEach((item, index) => {
+      const row = document.createElement('div');
+      row.className = `row row-${index % 2 === 0 ? '1' : '2'}`;
+
+      const section = document.createElement('section');
+      // Replace Font Awesome icon with Google Material Icon
+      const icon = document.createElement('i');
+      icon.className = 'material-icons';
+      icon.textContent = 'access_time';
+      section.appendChild(icon);
+
+      const details = document.createElement('div');
+      details.className = 'details';
+      const title = document.createElement('span');
+      title.className = 'title';
+      title.textContent = item.resource_descriptive_name;
+      const date = document.createElement('span');
+      date.textContent = `${new Date(item.latest_status_begin).getFullYear()} - ${new Date(item.latest_status_end).getFullYear()}`;
+      details.appendChild(title);
+      details.appendChild(date);
+      section.appendChild(details);
+
+      const description = document.createElement('p');
+      description.textContent = item.resource_description;
+      section.appendChild(description);
+
+      row.appendChild(section);
+      timeline.appendChild(row);
+    });
+  });
+
+  </script>
+</body>
+</html>
